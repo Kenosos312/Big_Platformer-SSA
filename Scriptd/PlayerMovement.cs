@@ -377,6 +377,7 @@ public class PlayerMovement : MonoBehaviour
 
         if(collision.gameObject.CompareTag("Ground")) {
             Grounded = true;
+            CanDash = true;
             animator.SetBool("Grounded",true);
         }
 
