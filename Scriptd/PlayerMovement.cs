@@ -10,7 +10,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private  float MoveSpeed;
     float horizontalInput;
     [SerializeField] private  float  DirectionFacing = 1;
-    private float StoredHorizontalAdditiveSpeed;
+
     
     [Header("Sprung")]
     [SerializeField] private float SetKyoteTime;
