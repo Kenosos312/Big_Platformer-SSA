@@ -9,7 +9,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Horizontal")]
     [SerializeField] private  float MoveSpeed;
     float horizontalInput;
-    [SerializeField] private  float  DirectionFacing = 1;
+    private  float  DirectionFacing = 1;
     
     [Header("Sprung")]
     [SerializeField] private float SetKyoteTime;
@@ -378,6 +378,7 @@ public class PlayerMovement : MonoBehaviour
         if(collision.gameObject.CompareTag("Ground")) {
             Grounded = true;
             animator.SetBool("Grounded",true);
+            CanDash = true;
         }
 
     }
