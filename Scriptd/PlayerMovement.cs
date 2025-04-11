@@ -137,7 +137,7 @@ public class PlayerMovement : MonoBehaviour
         
 
             if(!isAttacking && WallJumpRecoverTime < 0 && !IsWallStick) {
-                transform.localScale = new Vector3((float)(DirectionFacing * 0.8), (float)0.8, 1);
+                transform.localScale = new Vector3((float)(DirectionFacing ), 1, 1);
             }
 
             if(DirectionFacing != horizontalInput && horizontalInput != 0 ) {
@@ -145,8 +145,9 @@ public class PlayerMovement : MonoBehaviour
                     DirectionFacing = horizontalInput;
             }
 
+            
             if(WallJumpRecoverTime < 0 && WallDirection*-1 != horizontalInput) {
-
+                
                 rb.linearVelocity = new Vector2(MoveSpeed * DirectionFacing, rb.linearVelocity.y);
 
             }
@@ -233,7 +234,7 @@ public class PlayerMovement : MonoBehaviour
             WallJumpRecoverTime = 0;
             DirectionFacing = DirectionFacing * -1;
             WallDirection = DirectionFacing;
-            transform.localScale = new Vector3(0.8f * WallDirection, 0.8f, 1);
+            transform.localScale = new Vector3(1 * WallDirection, 1, 1);
             IsWallStick = true;
         }
 
@@ -377,6 +378,7 @@ public class PlayerMovement : MonoBehaviour
 
         if(collision.gameObject.CompareTag("Ground")) {
             Grounded = true;
+            CanDash = true;
             animator.SetBool("Grounded",true);
             CanDash = true;
         }
