@@ -5,408 +5,310 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-
-
     [Header("Horizontal")]
-    [SerializeField] private  float MoveSpeed;
-    float horizontalInput;
-    private  float  DirectionFacing = 1;
-    private float NotMovedSince;
-    
-    [Header("Sprung")]
-    private bool NormalGravity;
-    [SerializeField] private float SetKyoteTime;
-    private bool Grounded;
-    [SerializeField] private float SetJumpBuffering;
-    [SerializeField] private  float JumpStrength;
-    [SerializeField] private  float SetLongerJumpTime; 
-    private float kyoteTime;
-    private float jumpBuffering;
-    private bool didJump = false;
-    private float longerJumpTime;
-    float jumpInput;
+    [SerializeField] private float moveSpeed;
+    private float horizontalInput;
+    private float directionFacing = 1f;
+    private float timeSinceLastMove;
 
-    [Header("WandSprung")]
-    [SerializeField] private  float SetWallSlidingSpeed;
-    [SerializeField] private  float MaxWallSlidingSpeed;
-    private float WallSlidingSpeed;
-    private bool Wallfound;
-    private float WallDirection;
-    private bool IsWallStick;
-    [SerializeField] private  float SetWallJumpRecoverTime;
-    private float WallJumpRecoverTime;
-    [SerializeField] private float HorizontalWJumpStrength;
-    private  float VerticalWJumpStrength;
-    [SerializeField] private  float SetVerticalWJumpStrength;
+    [Header("Jump")]
+    private bool isNormalGravity;
+    [SerializeField] private float coyoteTimeDuration;
+    private bool isGrounded;
+    [SerializeField] private float jumpBufferDuration;
+    [SerializeField] private float jumpStrength;
+    [SerializeField] private float longerJumpDuration;
+    private float coyoteTimeCounter;
+    private float jumpBufferCounter;
+    private bool hasJumped = false;
+    private float longerJumpCounter;
+    private float jumpInput;
 
+    [Header("Wall Jump")]
+    [SerializeField] private float wallSlideSpeed;
+    [SerializeField] private float maxWallSlideSpeed;
+    private float currentWallSlideSpeed;
+    private bool isWallDetected;
+    private float wallDirection;
+    private bool isWallSticking;
+    [SerializeField] private float wallJumpRecoveryDuration;
+    private float wallJumpRecoveryCounter;
+    [SerializeField] private float horizontalWallJumpStrength;
+    private float verticalWallJumpStrength;
+    [SerializeField] private float verticalWallJumpStrengthSet;
 
     [Header("Attack")]
-    [SerializeField] private  float SetAttackBuffer;
-    private float AttackInput;
-    private float AttackBuffer;
-    private bool didAttack;
+    [SerializeField] private float attackBufferDuration;
+    private float attackInput;
+    private float attackBufferCounter;
+    private bool hasAttacked;
     private bool isAttacking;
-    private float AttackDelay;
-    private float SetAttackDelay = 0.5f;
-
+    private float attackDelayCounter;
+    private float attackDelaySet = 0.5f;
 
     [Header("Dash")]
-    [SerializeField] private  float DashStrength;
-    private float DashInput;
-    private bool CanDash;
-    public float SetCanDashTimer;
-    private float CanDashTimer;
-    private bool didDash;
+    [SerializeField] private float dashStrength;
+    private float dashInput;
+    private bool canDash;
+    public float dashCooldownDuration;
+    private float dashCooldownCounter;
+    private bool hasDashed;
     private bool isDashing;
-    private float DashTime;
-    private float DashDelay;
-    [SerializeField] private float SetDashTime;
-    [SerializeField] private float SetDashDelay;
-   
-    
+    private float dashDurationCounter;
+    private float dashDelayCounter;
+    [SerializeField] private float dashDuration;
+    [SerializeField] private float dashDelay;
 
-    [Header("Referenzen")]
-    [SerializeField] private Rigidbody2D rb;
+    [Header("References")]
+    [SerializeField] private Rigidbody2D rigidBody2D;
     [SerializeField] private Animator animator;
-    [SerializeField] private LayerMask WallLayer;
-    [SerializeField] private Transform WallSeekA;
-    [SerializeField] private Transform WallStickA;
-    [SerializeField] private Transform WallSeekB;
-    [SerializeField] private Transform WallStickB;
+    [SerializeField] private LayerMask wallLayer;
+    [SerializeField] private Transform wallCheckStart;
+    [SerializeField] private Transform wallStickStart;
+    [SerializeField] private Transform wallCheckEnd;
+    [SerializeField] private Transform wallStickEnd;
 
-    private InputAction DashAction;
+    private InputAction dashAction;
     private InputAction horizontalAction;
     private InputAction jumpAction;
 
-
-    //
     private void Start()
     {
-        DashAction = InputSystem.actions.FindAction("Dash");
+        dashAction = InputSystem.actions.FindAction("Dash");
         horizontalAction = InputSystem.actions.FindAction("Horizontal");
         jumpAction = InputSystem.actions.FindAction("Jump");
-
-
-
     }
 
-    private void Update() {
+    private void Update()
+    {
+        animator.SetFloat("NMS", timeSinceLastMove);
+        animator.SetFloat("Y_Movement", rigidBody2D.linearVelocity.y);
 
-        animator.SetFloat("NMS", NotMovedSince);
-        animator.SetFloat("Y_Movement", rb.linearVelocityY);
+        animator.SetBool("IsWallSticking", isWallSticking);
+        animator.SetBool("IsDashing", isDashing);
 
-        
-
-
-        
-        if(IsWallStick) {
-            animator.SetBool("IsWalling", true);
-        }
-        else {
-            animator.SetBool("IsWalling", false);
-        }
-
-        if(isDashing) {
-            animator.SetBool("Is_Dashing", true);
-        }
-        else {
-            animator.SetBool("Is_Dashing", false);
-        }
-        
-        
-        DashInput = DashAction.ReadValue<float>();
+        dashInput = dashAction.ReadValue<float>();
         horizontalInput = horizontalAction.ReadValue<float>();
         jumpInput = jumpAction.ReadValue<float>();
 
-        if(!Grounded && !NormalGravity){
-            rb.gravityScale = 4;
-            NormalGravity = false;
-        }else{
-            rb.gravityScale = 0;
+        if (!isGrounded && !isNormalGravity || rigidBody2D.linearVelocity.y != 0)
+        {
+            SetGravityScale(4);
+            isNormalGravity = false;
+        }
+        else
+        {
+            SetGravityScale(0);
         }
     }
 
     private void FixedUpdate()
     {
-
-         Jump();
-        WallJump();
-        Horizontal();
-        // Attack();
-        Dash();
+        HandleJump();
+        HandleWallJump();
+        HandleHorizontalMovement();
+        HandleDash();
     }
 
-    private void Horizontal()
+    private void HandleHorizontalMovement()
     {
-        if(rb.linearVelocityX == 0){
-            NotMovedSince += Time.deltaTime;
-        }else{
-            NotMovedSince = 0;
+        if (rigidBody2D.linearVelocity.x == 0)
+        {
+            timeSinceLastMove += Time.deltaTime;
+        }
+        else
+        {
+            timeSinceLastMove = 0;
         }
 
-        if(horizontalInput != 0 && !isDashing) {
-        
-
-            if(!isAttacking && WallJumpRecoverTime < 0 && !IsWallStick) {
-                transform.localScale = new Vector3((float)(DirectionFacing ), 1, 1);
+        if (horizontalInput != 0 && !isDashing)
+        {
+            if (!isAttacking && wallJumpRecoveryCounter < 0 && !isWallSticking)
+            {
+                transform.localScale = new Vector3(directionFacing, 1, 1);
             }
 
-            if(DirectionFacing != horizontalInput && horizontalInput != 0 ) {
-
-                    DirectionFacing = horizontalInput;
+            if (directionFacing != horizontalInput && horizontalInput != 0)
+            {
+                directionFacing = horizontalInput;
             }
 
-            
-            if(WallJumpRecoverTime < 0 && WallDirection*-1 != horizontalInput) {
-                
-                rb.linearVelocity = new Vector2(MoveSpeed * DirectionFacing, rb.linearVelocity.y);
-
+            if (wallJumpRecoveryCounter < 0 && wallDirection * -1 != horizontalInput)
+            {
+                rigidBody2D.linearVelocity = new Vector2(moveSpeed * directionFacing, rigidBody2D.linearVelocity.y);
             }
-
         }
     }
 
-    private void Jump(){
-
-        
-        
-        //KyoteTime
-        if(Grounded){
-            kyoteTime = SetKyoteTime;
+    private void HandleJump()
+    {
+        if (isGrounded)
+        {
+            coyoteTimeCounter = coyoteTimeDuration;
         }
-        else{
-            kyoteTime -= Time.deltaTime;
-        }
-
-        // Jump Buffering
-        if(jumpInput > 0 && !didJump){
-            jumpBuffering = SetJumpBuffering;
-            didJump = true;
-        }
-        else{
-            jumpBuffering -= Time.deltaTime;
+        else
+        {
+            coyoteTimeCounter -= Time.deltaTime;
         }
 
-        if (jumpInput <= 0.1 ){
-            longerJumpTime = 0;
-            didJump = false;
+        if (jumpInput > 0 && !hasJumped)
+        {
+            jumpBufferCounter = jumpBufferDuration;
+            hasJumped = true;
+        }
+        else
+        {
+            jumpBufferCounter -= Time.deltaTime;
         }
 
-        //Jump
-        if(!isDashing) {
+        if (jumpInput <= 0.1f)
+        {
+            longerJumpCounter = 0;
+            hasJumped = false;
+        }
 
-            if(kyoteTime > 0 && jumpBuffering > 0) {
-
-                rb.linearVelocity = new Vector2(rb.linearVelocity.x, JumpStrength);
-                kyoteTime = 0;
-                jumpBuffering = 0;
-                longerJumpTime = SetLongerJumpTime;
-                Grounded = false;
-
+        if (!isDashing)
+        {
+            if (coyoteTimeCounter > 0 && jumpBufferCounter > 0)
+            {
+                rigidBody2D.linearVelocity = new Vector2(rigidBody2D.linearVelocity.x, jumpStrength);
+                coyoteTimeCounter = 0;
+                jumpBufferCounter = 0;
+                longerJumpCounter = longerJumpDuration;
+                isGrounded = false;
             }
-            else if(jumpInput > 0 && longerJumpTime > 0) {
-
-                if(rb.linearVelocity.y < 0.1) {
-
-                    rb.linearVelocityY = 0;
-                    longerJumpTime = 0;
+            else if (jumpInput > 0 && longerJumpCounter > 0)
+            {
+                if (rigidBody2D.linearVelocity.y < 0.1f)
+                {
+                    rigidBody2D.linearVelocity = new Vector2(rigidBody2D.linearVelocity.x, 0);
+                    longerJumpCounter = 0;
                 }
 
-                rb.linearVelocity = new Vector2(rb.linearVelocity.x, JumpStrength);
-                longerJumpTime -= Time.deltaTime;
-
+                rigidBody2D.linearVelocity = new Vector2(rigidBody2D.linearVelocity.x, jumpStrength);
+                longerJumpCounter -= Time.deltaTime;
             }
-            else if(rb.linearVelocity.y <= 0) {
-
-
-                rb.gravityScale = 4;
-                longerJumpTime = 0;
+            else if (rigidBody2D.linearVelocity.y <= 0)
+            {
+                SetGravityScale(4);
+                longerJumpCounter = 0;
             }
         }
-        
-            
     }
 
-    private void WallJump() {
+     private void HandleWallJump()
+    {
+        wallJumpRecoveryCounter -= Time.deltaTime;
 
-        WallJumpRecoverTime -= Time.deltaTime;
+        isWallDetected = Physics2D.OverlapArea(wallCheckStart.position, wallCheckEnd.position, wallLayer);
+        isWallSticking = Physics2D.OverlapArea(wallStickStart.position, wallStickEnd.position, wallLayer);
 
-        Wallfound = Physics2D.OverlapArea(WallSeekA.position,WallSeekB.position,WallLayer);
-        IsWallStick = Physics2D.OverlapArea(WallStickA.position,WallStickB.position, WallLayer);
-        if(!IsWallStick && !Wallfound && WallJumpRecoverTime < 0) {
-            WallDirection = 0;
-        
+        if (!isWallSticking && !isWallDetected && wallJumpRecoveryCounter < 0)
+        {
+            wallDirection = 0;
         }
 
-
-
-
-
-        if(Wallfound && !isDashing && !isAttacking && !Grounded) {
-            WallSlidingSpeed = SetWallSlidingSpeed;
-            WallJumpRecoverTime = 0;
-            DirectionFacing = DirectionFacing * -1;
-            WallDirection = DirectionFacing;
-            transform.localScale = new Vector3(1 * WallDirection, 1, 1);
-            IsWallStick = true;
+        if (isWallDetected && !isDashing && !isAttacking && !isGrounded)
+        {
+            currentWallSlideSpeed = wallSlideSpeed;
+            wallJumpRecoveryCounter = 0;
+            directionFacing *= -1;
+            wallDirection = directionFacing;
+            transform.localScale = new Vector3(wallDirection, 1, 1);
+            isWallSticking = true;
         }
 
-        if(IsWallStick && !Grounded) {
-            if(WallSlidingSpeed < MaxWallSlidingSpeed)  WallSlidingSpeed += Time.deltaTime * 8;
+        if (isWallSticking && !isGrounded)
+        {
+            if (currentWallSlideSpeed < maxWallSlideSpeed)
+                currentWallSlideSpeed += Time.deltaTime * 8;
 
-            rb.linearVelocity = new Vector2(WallDirection * 0.2f * -1, -WallSlidingSpeed);
+            rigidBody2D.linearVelocity = new Vector2(wallDirection * -0.2f, -currentWallSlideSpeed);
 
-            if(WallJumpRecoverTime < 0 && jumpBuffering > 0 ) {
-                jumpBuffering = 0;
-                WallJumpRecoverTime = SetWallJumpRecoverTime;
-                VerticalWJumpStrength = SetVerticalWJumpStrength;
-                rb.linearVelocity = new Vector2(HorizontalWJumpStrength * WallDirection,VerticalWJumpStrength);
-                
+            if (wallJumpRecoveryCounter < 0 && jumpBufferCounter > 0)
+            {
+                jumpBufferCounter = 0;
+                wallJumpRecoveryCounter = wallJumpRecoveryDuration;
+                verticalWallJumpStrength = verticalWallJumpStrengthSet;
+                rigidBody2D.linearVelocity = new Vector2(horizontalWallJumpStrength * wallDirection, verticalWallJumpStrength);
             }
-
         }
 
-        if(WallJumpRecoverTime > 0) {
-            VerticalWJumpStrength -= 0.3f;
-            rb.linearVelocity = new Vector2(HorizontalWJumpStrength * WallDirection, VerticalWJumpStrength);
+        if (wallJumpRecoveryCounter > 0)
+        {
+            verticalWallJumpStrength -= 0.3f;
+            rigidBody2D.linearVelocity = new Vector2(horizontalWallJumpStrength * wallDirection, verticalWallJumpStrength);
         }
-       
-
-
-
-
-
-
     }
 
-    private void Dash() {
+    private void HandleDash()
+    {
+        dashDelayCounter -= Time.deltaTime;
+        dashDurationCounter -= Time.deltaTime;
+        dashCooldownCounter -= Time.deltaTime;
 
-        DashDelay -= Time.deltaTime;
-        DashTime -= Time.deltaTime;
-        CanDashTimer -= Time.deltaTime;
+        if (dashCooldownCounter < 0)
+            canDash = true;
 
-        if(CanDashTimer < 0) {
-            CanDash = true;
-        
-        }
-
-        //Dash Start
-        if(CanDash && DashInput > 0 && !didDash && DashDelay < 0) {
-
+        if (canDash && dashInput > 0 && !hasDashed && dashDelayCounter < 0)
+        {
             isDashing = true;
-            CanDashTimer = SetCanDashTimer;
-            DashDelay = SetDashDelay;
-            DashTime = SetDashTime;
-            CanDash = false;
-            animator.SetBool("Is_Dashing",true);
+            canDash = false;
+            hasDashed = true;
+            dashCooldownCounter = dashCooldownDuration;
+            dashDelayCounter = dashDelay;
+            dashDurationCounter = dashDuration;
+            longerJumpCounter = 0;
 
-
-            longerJumpTime = 0;
-            rb.gravityScale = 0;
-            rb.linearVelocity = new Vector2(DashStrength * DirectionFacing, 0);
-
+            animator.SetBool("IsDashing", true);
+            SetGravityScale(0);
+            rigidBody2D.linearVelocity = new Vector2(dashStrength * directionFacing, 0);
         }
 
-        //Dash Ende
-        if(DashTime <= 0 && isDashing) {
+        if (dashDurationCounter <= 0 && isDashing)
+        {
             isDashing = false;
-            rb.gravityScale = 4;
-            rb.linearVelocity = new Vector2(3 * DirectionFacing, 0);
-            animator.SetBool("Is_Dashing",false);
-        
+            SetGravityScale(4);
+            rigidBody2D.linearVelocity = new Vector2(3 * directionFacing, 0);
+            animator.SetBool("IsDashing", false);
         }
 
-        //NonConstantDash
-        if(DashInput <= 0) {
-            didDash = false;
-        }
-        if(DashInput > 0) {
-
-            didDash = true;
-        }
-
-
-
-
-
-
-    }
-
-    private void Attack() {
-
-        AttackDelay -= Time.deltaTime;
-
-        if(AttackDelay <= 0 && isAttacking) {
-        
-            isAttacking = false;
-            MoveSpeed = 5;
-        }
-
-        //NonConstantAttack
-        if(AttackInput > 0 && !didAttack) {
-            AttackBuffer = SetAttackBuffer;
-            didAttack = true;
-        }
-        else {
-
-            AttackBuffer -= Time.deltaTime;
-        }
-
-        if(AttackInput <= 0) {
-            didAttack = false;
-        }
-
-        //Attack
-        if(AttackBuffer > 0 && !isDashing ) {
-            AttackBuffer = 0;
-            isAttacking = true;
-            AttackDelay = SetAttackDelay;
-            MoveSpeed = MoveSpeed / 2;
-
-        }
-
-
-
-
-
-        
-        
-
-
-    
+        if (dashInput <= 0)
+            hasDashed = false;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.gameObject.CompareTag("Ground")){
-            Grounded = true;
-            CanDash = true;
-            NormalGravity = true;
-            animator.SetBool("Grounded",true);
-        }
-
+        HandleGroundCollision(collision, true);
     }
 
-    private void OnCollisionStay2D(Collision2D collision) {
-
-        if(collision.gameObject.CompareTag("Ground")) {
-            Grounded = true;
-            CanDash = true;
-            NormalGravity = true;
-            animator.SetBool("Grounded",true);
-            CanDash = true;
-        }
-
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        HandleGroundCollision(collision, true);
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if(collision.gameObject.CompareTag("Ground")){
-            Grounded = false;
-            animator.SetBool("Grounded", false); ;
-        }
-
+        HandleGroundCollision(collision, false);
     }
 
-    
+    private void HandleGroundCollision(Collision2D collision, bool isTouching)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = isTouching;
+            animator.SetBool("Grounded", isTouching);
+            if (isTouching)
+            {
+                canDash = true;
+                isNormalGravity = true;
+            }
+        }
+    }
+
+    private void SetGravityScale(float scale)
+    {
+        rigidBody2D.gravityScale = scale;
+    }
 }
+
