@@ -109,6 +109,32 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: 4
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: 4
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -935,14 +961,14 @@ TextureImporter:
       outline: []
       physicsShape:
       - - {x: 16, y: 16}
-        - {x: 14, y: 14}
         - {x: -1, y: 0}
         - {x: -1, y: 0}
-        - {x: 13, y: -13}
+        - {x: -1, y: 0}
+        - {x: -1, y: 0}
         - {x: 16, y: -16}
       - - {x: -1, y: 0}
-        - {x: 0, y: 0}
-        - {x: 0, y: 0}
+        - {x: -1, y: 0}
+        - {x: -1, y: 0}
         - {x: -1, y: 0}
       tessellationDetail: 0
       bones: []
@@ -1166,10 +1192,10 @@ TextureImporter:
       physicsShape:
       - - {x: 0, y: 0}
         - {x: 0, y: 0}
-        - {x: -15, y: 15}
+        - {x: -16, y: 16}
         - {x: -16, y: 16}
         - {x: -16, y: -16}
-        - {x: -14, y: -14}
+        - {x: -16, y: -16}
       tessellationDetail: 0
       bones: []
       spriteID: ef6c507694173ff46ae2b3dd7cc0dd1b
@@ -1192,10 +1218,10 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape:
-      - - {x: 14, y: -14}
+      - - {x: 16, y: -16}
         - {x: 0, y: 0}
         - {x: 0, y: 0}
-        - {x: -14, y: -14}
+        - {x: -16, y: -16}
         - {x: -16, y: -16}
         - {x: 16, y: -16}
       tessellationDetail: 0

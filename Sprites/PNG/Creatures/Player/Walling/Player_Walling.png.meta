@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 21953f4b46a06414f9f8d45509883c77
+guid: 2b601065e4baef14db44e8db2658f5b7
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4362596593370561295
-    second: Player_Dash_0
+      213: 4284171267389155422
+    second: Player_Walling_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -47,7 +47,7 @@ TextureImporter:
   lightmap: 0
   compressionQuality: 50
   spriteMode: 2
-  spriteExtrude: 1
+  spriteExtrude: 0
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
@@ -139,7 +139,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Player_Dash_0
+      name: Player_Walling_0
       rect:
         serializedVersion: 2
         x: 0
@@ -154,8 +154,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f0b7e26dc7e0b8c30800000000000000
-      internalID: 4362596593370561295
+      spriteID: e586aa5b11f647b30800000000000000
+      internalID: 4284171267389155422
       vertices: []
       indices: 
       edges: []
@@ -164,7 +164,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: b1950b9c91441de48850899216c3f665
+    spriteID: 6eea39282c55b404db1a3188a51cddf8
     internalID: 0
     vertices: []
     indices: 
@@ -174,7 +174,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Player_Dash_0: 4362596593370561295
+      Player_Walling_0: 4284171267389155422
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

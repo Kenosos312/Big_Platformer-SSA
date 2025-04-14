@@ -1,4 +1,5 @@
 using Unity.Mathematics;
+using UnityEditor.ShaderGraph;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,8 +11,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private  float MoveSpeed;
     float horizontalInput;
     private  float  DirectionFacing = 1;
+    private float NotMovedSince;
     
     [Header("Sprung")]
+    private bool NormalGravity;
     [SerializeField] private float SetKyoteTime;
     private bool Grounded;
     [SerializeField] private float SetJumpBuffering;
@@ -74,7 +77,6 @@ public class PlayerMovement : MonoBehaviour
     private InputAction DashAction;
     private InputAction horizontalAction;
     private InputAction jumpAction;
-    private InputAction AttackAction;
 
 
     //
@@ -83,7 +85,6 @@ public class PlayerMovement : MonoBehaviour
         DashAction = InputSystem.actions.FindAction("Dash");
         horizontalAction = InputSystem.actions.FindAction("Horizontal");
         jumpAction = InputSystem.actions.FindAction("Jump");
-        AttackAction = InputSystem.actions.FindAction("Attack");
 
 
 
@@ -91,11 +92,13 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update() {
 
-
-        animator.SetFloat("X_Movement", rb.linearVelocityX);
+        animator.SetFloat("NMS", NotMovedSince);
         animator.SetFloat("Y_Movement", rb.linearVelocityY);
 
+        
 
+
+        
         if(IsWallStick) {
             animator.SetBool("IsWalling", true);
         }
@@ -110,28 +113,31 @@ public class PlayerMovement : MonoBehaviour
             animator.SetBool("Is_Dashing", false);
         }
         
+        
+        DashInput = DashAction.ReadValue<float>();
+        horizontalInput = horizontalAction.ReadValue<float>();
+        jumpInput = jumpAction.ReadValue<float>();
+
+        
     }
 
     private void FixedUpdate()
     {
-        DashInput = DashAction.ReadValue<float>();
-        AttackInput = AttackAction.ReadValue<float>();
-        horizontalInput = horizontalAction.ReadValue<float>();
-        jumpInput = jumpAction.ReadValue<float>();
 
-
-
-        Jump();
+         Jump();
         WallJump();
         Horizontal();
         // Attack();
         Dash();
-
-
     }
 
     private void Horizontal()
     {
+        if(rb.linearVelocityX == 0){
+            NotMovedSince += Time.deltaTime;
+        }else{
+            NotMovedSince = 0;
+        }
 
         if(horizontalInput != 0 && !isDashing) {
         
@@ -156,6 +162,11 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void Jump(){
+
+        if(!Grounded && !NormalGravity){
+            rb.gravityScale = 4;
+            NormalGravity = false;
+        }
         
         //KyoteTime
         if(Grounded){
@@ -365,10 +376,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Ground")){
+        if(collision.gameObject.CompareTag("Ground")){
             Grounded = true;
             CanDash = true;
-
+            NormalGravity = true;
             animator.SetBool("Grounded",true);
         }
 
@@ -379,6 +390,7 @@ public class PlayerMovement : MonoBehaviour
         if(collision.gameObject.CompareTag("Ground")) {
             Grounded = true;
             CanDash = true;
+            NormalGravity = true;
             animator.SetBool("Grounded",true);
             CanDash = true;
         }
