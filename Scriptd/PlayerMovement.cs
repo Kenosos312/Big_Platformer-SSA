@@ -118,7 +118,12 @@ public class PlayerMovement : MonoBehaviour
         horizontalInput = horizontalAction.ReadValue<float>();
         jumpInput = jumpAction.ReadValue<float>();
 
-        
+        if(!Grounded && !NormalGravity){
+            rb.gravityScale = 4;
+            NormalGravity = false;
+        }else{
+            rb.gravityScale = 0;
+        }
     }
 
     private void FixedUpdate()
@@ -163,10 +168,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Jump(){
 
-        if(!Grounded && !NormalGravity){
-            rb.gravityScale = 4;
-            NormalGravity = false;
-        }
+        
         
         //KyoteTime
         if(Grounded){
