@@ -37,15 +37,6 @@ public class PlayerMovement : MonoBehaviour
     private float verticalWallJumpStrength;
     [SerializeField] private float verticalWallJumpStrengthSet;
 
-    [Header("Attack")]
-    [SerializeField] private float attackBufferDuration;
-    private float attackInput;
-    private float attackBufferCounter;
-    private bool hasAttacked;
-    private bool isAttacking;
-    private float attackDelayCounter;
-    private float attackDelaySet = 0.5f;
-
     [Header("Dash")]
     [SerializeField] private float dashStrength;
     private float dashInput;
@@ -123,7 +114,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (horizontalInput != 0 && !isDashing)
         {
-            if (!isAttacking && wallJumpRecoveryCounter < 0 && !isWallSticking)
+            if (wallJumpRecoveryCounter < 0 && !isWallSticking)
             {
                 transform.localScale = new Vector3(directionFacing, 1, 1);
             }
@@ -208,7 +199,7 @@ public class PlayerMovement : MonoBehaviour
             wallDirection = 0;
         }
 
-        if (isWallDetected && !isDashing && !isAttacking && !isGrounded)
+        if (isWallDetected && !isDashing && !isGrounded)
         {
             currentWallSlideSpeed = wallSlideSpeed;
             wallJumpRecoveryCounter = 0;
