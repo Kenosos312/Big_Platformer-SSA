@@ -14,15 +14,16 @@ public class PlayerMovement : MonoBehaviour
     [Header("Jump")]
     [SerializeField] private float coyoteTimeDuration;
     private bool isGrounded;
-    [SerializeField] private float jumpBufferDuration;
+    [SerializeField] private float SetJumpBufferDuration;
     [SerializeField] private float jumpStrength;
     [SerializeField] private float longerJumpDuration;
     private float coyoteTimeCounter;
-    private float jumpBufferCounter;
+    private float JumpBufferDuration;
     private bool hasJumped = false;
     private float longerJumpCounter;
     private float jumpInput;
 
+    
     [Header("WandSprung")]
     [SerializeField] private  float SetWallSlidingSpeed;
     [SerializeField] private  float MaxWallSlidingSpeed;
@@ -85,8 +86,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        HandleJump();
         HandleWallJump();
+        HandleJump();
         HandleHorizontalMovement();
         HandleDash();
     }
@@ -134,12 +135,12 @@ public class PlayerMovement : MonoBehaviour
 
         if (jumpInput > 0 && !hasJumped)
         {
-            jumpBufferCounter = jumpBufferDuration;
+            JumpBufferDuration = SetJumpBufferDuration;
             hasJumped = true;
         }
         else
         {
-            jumpBufferCounter -= Time.deltaTime;
+            JumpBufferDuration -= Time.deltaTime;
         }
 
         if (jumpInput <= 0.1f)
@@ -150,11 +151,11 @@ public class PlayerMovement : MonoBehaviour
 
         if (!isDashing)
         {
-            if (coyoteTimeCounter > 0 && jumpBufferCounter > 0)
+            if (coyoteTimeCounter > 0 && JumpBufferDuration > 0)
             {
                 rigidBody2D.linearVelocity = new Vector2(rigidBody2D.linearVelocity.x, jumpStrength);
                 coyoteTimeCounter = 0;
-                jumpBufferCounter = 0;
+                JumpBufferDuration = 0;
                 longerJumpCounter = longerJumpDuration;
                 isGrounded = false;
             }
@@ -177,14 +178,13 @@ public class PlayerMovement : MonoBehaviour
         }
     }
     
-     private void HandleWallJump()
-    {
+       private void HandleWallJump() {
 
         WallJumpRecoverTime -= Time.deltaTime;
 
         Wallfound = Physics2D.OverlapArea(wallCheckA.position,wallCheckB.position,wallLayer);
-        IsWallStick = Physics2D.OverlapArea(wallStickA.position,wallStickB.position, wallLayer);
-
+        IsWallStick = Physics2D.OverlapArea(wallStickA.position,wallStickB.position,wallLayer);
+        
         if(!IsWallStick && !Wallfound && WallJumpRecoverTime < 0) {
             WallDirection = 0;
         
@@ -199,7 +199,7 @@ public class PlayerMovement : MonoBehaviour
             WallJumpRecoverTime = 0;
             directionFacing = directionFacing * -1;
             WallDirection = directionFacing;
-            transform.localScale = new Vector3(1 * WallDirection, 1, 1);
+            transform.localScale = new Vector3(0.8f * WallDirection, 0.8f, 1);
             IsWallStick = true;
         }
 
@@ -208,8 +208,8 @@ public class PlayerMovement : MonoBehaviour
 
             rigidBody2D.linearVelocity = new Vector2(WallDirection * 0.2f * -1, -WallSlidingSpeed);
 
-            if(WallJumpRecoverTime < 0 && jumpBufferCounter > 0 ) {
-                jumpBufferCounter = 0;
+            if(WallJumpRecoverTime < 0 && JumpBufferDuration > 0 ) {
+                JumpBufferDuration = 0;
                 WallJumpRecoverTime = SetWallJumpRecoverTime;
                 VerticalWJumpStrength = SetVerticalWJumpStrength;
                 rigidBody2D.linearVelocity = new Vector2(HorizontalWJumpStrength * WallDirection,VerticalWJumpStrength);
@@ -222,6 +222,13 @@ public class PlayerMovement : MonoBehaviour
             VerticalWJumpStrength -= 0.3f;
             rigidBody2D.linearVelocity = new Vector2(HorizontalWJumpStrength * WallDirection, VerticalWJumpStrength);
         }
+       
+
+
+
+
+
+
     }
 
     private void HandleDash()
