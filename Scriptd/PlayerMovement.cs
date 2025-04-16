@@ -41,14 +41,14 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float dashStrength;
     private float dashInput;
     private bool canDash;
-    public float dashCooldownDuration;
-    private float dashCooldownCounter;
+    public float SetDashCooldown;
+    private float DashCooldown;
     private bool hasDashed;
     private bool isDashing;
-    private float dashDurationCounter;
-    private float dashDelayCounter;
-    [SerializeField] private float dashDuration;
-    [SerializeField] private float dashDelay;
+    private float dashDuration;
+    private float DashDelay;
+    [SerializeField] private float SetdashDuration;
+    [SerializeField] private float SetDashDelay;
 
     [Header("References")]
     [SerializeField] private Rigidbody2D rigidBody2D;
@@ -184,13 +184,11 @@ public class PlayerMovement : MonoBehaviour
 
         Wallfound = Physics2D.OverlapArea(wallCheckA.position,wallCheckB.position,wallLayer);
         IsWallStick = Physics2D.OverlapArea(wallStickA.position,wallStickB.position,wallLayer);
-        
+
         if(!IsWallStick && !Wallfound && WallJumpRecoverTime < 0) {
             WallDirection = 0;
-        
         }
-
-
+        
 
 
 
@@ -199,7 +197,7 @@ public class PlayerMovement : MonoBehaviour
             WallJumpRecoverTime = 0;
             directionFacing = directionFacing * -1;
             WallDirection = directionFacing;
-            transform.localScale = new Vector3(0.8f * WallDirection, 0.8f, 1);
+            transform.localScale = new Vector3(1f * WallDirection, 1f, 1);
             IsWallStick = true;
         }
 
@@ -233,21 +231,21 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleDash()
     {
-        dashDelayCounter -= Time.deltaTime;
-        dashDurationCounter -= Time.deltaTime;
-        dashCooldownCounter -= Time.deltaTime;
+        DashDelay -= Time.deltaTime;
+        dashDuration -= Time.deltaTime;
+        DashCooldown -= Time.deltaTime;
 
-        if (dashCooldownCounter < 0)
+        if (DashCooldown < 0)
             canDash = true;
 
-        if (canDash && dashInput > 0 && !hasDashed && dashDelayCounter < 0)
+        if (canDash && dashInput > 0 && !hasDashed && DashDelay < 0)
         {
             isDashing = true;
             canDash = false;
             hasDashed = true;
-            dashCooldownCounter = dashCooldownDuration;
-            dashDelayCounter = dashDelay;
-            dashDurationCounter = dashDuration;
+            DashCooldown = SetDashCooldown;
+            DashDelay = SetDashDelay;
+            dashDuration = SetdashDuration;
             longerJumpCounter = 0;
 
             animator.SetBool("IsDashing", true);
@@ -255,7 +253,7 @@ public class PlayerMovement : MonoBehaviour
             rigidBody2D.linearVelocity = new Vector2(dashStrength * directionFacing, 0);
         }
 
-        if (dashDurationCounter <= 0 && isDashing)
+        if (dashDuration <= 0 && isDashing)
         {
             isDashing = false;
             SetGravityScale(4);
