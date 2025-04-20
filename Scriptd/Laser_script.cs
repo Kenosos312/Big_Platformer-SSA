@@ -5,13 +5,18 @@ using UnityEngine;
 public class LaserBeam : MonoBehaviour
 {
     [SerializeField] private float laserMaxLength = 20f;
-    [SerializeField] private float laserRadius = 0.1f; // "Dicke" des Lasers
+    [SerializeField] private float laserRadius = 0.3f; // "Dicke" des Lasers
     [SerializeField] private LayerMask collisionMask;
+    [SerializeField] private LayerMask PlayerLayer;
+
     [SerializeField] private LineRenderer lineRenderer;
     [SerializeField] private GameObject ParticleObject;
     [SerializeField] private Transform LineStart1;
     [SerializeField] private Transform LineEnd2;
     [SerializeField] private float SetTimeforDistance;
+    
+    private Vector2 laserOrigin;
+    private Vector2 laserDirection;
     private float TimeforDistance;
     private float travelSpeed;
     [SerializeReference] private Rigidbody2D rb;
@@ -34,10 +39,11 @@ public class LaserBeam : MonoBehaviour
 
     private void CastLaser()
     {
-        Vector2 laserOrigin = transform.position;
-        Vector2 laserDirection = transform.right;
+        laserOrigin = transform.position;
+        laserOrigin.y -= 0.65f;
+        laserDirection = transform.right;
 
-        // Benutze CircleCast statt Raycast
+        // Benutze CircleCast
         RaycastHit2D hit = Physics2D.CircleCast(laserOrigin, laserRadius, laserDirection, laserMaxLength, collisionMask);
 
         Vector2 endPosition = hit.collider != null
@@ -49,6 +55,20 @@ public class LaserBeam : MonoBehaviour
         lineRenderer.SetPosition(0, laserOrigin);
         lineRenderer.SetPosition(1, endPosition);
         ParticleObject.transform.position = endPosition;
+        DetectPlayer();
+    }
+
+    private void DetectPlayer(){
+        RaycastHit2D hit = Physics2D.CircleCast(laserOrigin, laserRadius, laserDirection, ParticleObject.transform.position.x, PlayerLayer);
+
+        if (hit.collider != null && hit.collider.CompareTag("Player"))
+        {
+            PlayerMovement PlayerScript = hit.collider.gameObject.GetComponent<PlayerMovement>();
+            PlayerScript.Dying = true;
+            PlayerScript.Died = true;
+        }
+
+
     }
 
     private void MoveLaserMaker(){

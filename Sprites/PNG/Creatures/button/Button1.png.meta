@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 891af819ea587a84280ea3cdbd8c663c
+guid: 9e2da74f78181f34cb8342fbf8583a8c
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 282275229127865799
-    second: Laser_Konstruktor2_0
+      213: 3502715887467967171
+    second: Button1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -139,23 +139,27 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Laser_Konstruktor
+      name: Button1_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 48
-        height: 48
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
-      physicsShape: []
-      tessellationDetail: -1
+      physicsShape:
+      - - {x: 11, y: -16}
+        - {x: 11, y: -3}
+        - {x: -11, y: -3}
+        - {x: -11, y: -16}
+      tessellationDetail: 0
       bones: []
-      spriteID: 7c5fe0943d7dae300800000000000000
-      internalID: 282275229127865799
+      spriteID: 3c235ad9a852c9030800000000000000
+      internalID: 3502715887467967171
       vertices: []
       indices: 
       edges: []
@@ -164,7 +168,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: a679431c3da4f3246aeace8985236ccf
+    spriteID: 821b50d5a229ef14c80d1e3307707d1e
     internalID: 0
     vertices: []
     indices: 
@@ -174,7 +178,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Laser_Konstruktor: 282275229127865799
+      Button1_0: 3502715887467967171
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

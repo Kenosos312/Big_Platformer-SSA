@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Unity.Mathematics;
 using UnityEditor.ShaderGraph;
 using UnityEngine;
@@ -5,12 +6,16 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
+
+    #region Horizontal
     [Header("Horizontal")]
     [SerializeField] private float moveSpeed;
     private float horizontalInput;
     private float directionFacing = 1f;
     private float timeSinceLastMove;
+    #endregion
 
+    #region Jump
     [Header("Jump")]
     [SerializeField] private float coyoteTimeDuration;
     private bool isGrounded;
@@ -22,8 +27,9 @@ public class PlayerMovement : MonoBehaviour
     private bool hasJumped = false;
     private float longerJumpCounter;
     private float jumpInput;
+    #endregion
 
-    
+    #region Wandsprung
     [Header("WandSprung")]
     [SerializeField] private  float SetWallSlidingSpeed;
     [SerializeField] private  float MaxWallSlidingSpeed;
@@ -36,7 +42,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float HorizontalWJumpStrength;
     private  float VerticalWJumpStrength;
     [SerializeField] private  float SetVerticalWJumpStrength;
+    #endregion
 
+    #region Dash
     [Header("Dash")]
     [SerializeField] private float dashStrength;
     private float dashInput;
@@ -49,7 +57,18 @@ public class PlayerMovement : MonoBehaviour
     private float DashDelay;
     [SerializeField] private float SetdashDuration;
     [SerializeField] private float SetDashDelay;
+    #endregion
 
+    #region Sterbung
+    [Header("Sterbung")]
+    private float SetDieDuration = 2;
+    private float DieDuration;
+    private int CheckpointNumber;
+    public bool Dying;
+    public bool Died;
+    #endregion
+
+    #region Referenzen
     [Header("References")]
     [SerializeField] private Rigidbody2D rigidBody2D;
     [SerializeField] private Animator animator;
@@ -58,10 +77,12 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Transform wallStickA;
     [SerializeField] private Transform wallCheckB;
     [SerializeField] private Transform wallStickB;
+    [SerializeField] private Transform LastCheckpointPosition;
 
     private InputAction dashAction;
     private InputAction horizontalAction;
     private InputAction jumpAction;
+    #endregion
 
     private void Start()
     {
@@ -77,6 +98,7 @@ public class PlayerMovement : MonoBehaviour
 
         animator.SetBool("IsWallSticking", IsWallStick);
         animator.SetBool("IsDashing", isDashing);
+        animator.SetBool("Dying",Dying);
 
         dashInput = dashAction.ReadValue<float>();
         horizontalInput = horizontalAction.ReadValue<float>();
@@ -86,6 +108,13 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        
+        
+        if(Dying){
+            HandleDeath();
+            return;
+        } 
+
         HandleWallJump();
         HandleJump();
         HandleHorizontalMovement();
@@ -265,9 +294,36 @@ public class PlayerMovement : MonoBehaviour
             hasDashed = false;
     }
 
+    private void HandleDeath(){
+        
+        if(Died){
+            DieDuration = SetDieDuration;
+            Died = false;
+            SetGravityScale(0);
+        }
+        
+        if(DieDuration <= 1.03 && DieDuration >= 0.97) transform.position = LastCheckpointPosition.position;
+
+        if(DieDuration <= 0) Dying = false;
+        DieDuration -= Time.deltaTime;
+        rigidBody2D.linearVelocity = new Vector2(0,0);
+        if(!Dying) SetGravityScale(4);
+    }
+
+    public void GetCheckpoint(int newCheckpointNumber,Vector3 newCheckpointPosition){
+        if(newCheckpointNumber > CheckpointNumber){
+            LastCheckpointPosition.position = newCheckpointPosition;
+            CheckpointNumber = newCheckpointNumber;
+        }
+    }
+
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         HandleGroundCollision(collision, true);
+
+       
+        
     }
 
     private void OnCollisionStay2D(Collision2D collision)
@@ -278,6 +334,15 @@ public class PlayerMovement : MonoBehaviour
     private void OnCollisionExit2D(Collision2D collision)
     {
         HandleGroundCollision(collision, false);
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+         if(other.gameObject.tag == "Laser"){
+            Dying = true;
+            Died = true;
+
+        }
     }
 
     private void HandleGroundCollision(Collision2D collision, bool isTouching)

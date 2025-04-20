@@ -1,10 +1,13 @@
 fileFormatVersion: 2
-guid: 891af819ea587a84280ea3cdbd8c663c
+guid: 50018e0df9e9f9a4fb143ca4295ccf56
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 282275229127865799
-    second: Laser_Konstruktor2_0
+      213: 8225880280629675469
+    second: Move TUtorial_0
+  - first:
+      213: 1038507140138617773
+    second: Move TUtorial_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +40,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -51,7 +54,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 32
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -74,7 +77,7 @@ TextureImporter:
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: 4
+    textureFormat: -1
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
@@ -139,23 +142,45 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Laser_Konstruktor
+      name: Move TUtorial_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 48
-        height: 48
+        x: 7
+        y: 68
+        width: 217
+        height: 97
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 7c5fe0943d7dae300800000000000000
-      internalID: 282275229127865799
+      spriteID: dc582db5882382270800000000000000
+      internalID: 8225880280629675469
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Move TUtorial_1
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 65
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dab4ba0edb4896e00800000000000000
+      internalID: 1038507140138617773
       vertices: []
       indices: 
       edges: []
@@ -164,7 +189,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: a679431c3da4f3246aeace8985236ccf
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -173,8 +198,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      Laser_Konstruktor: 282275229127865799
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
