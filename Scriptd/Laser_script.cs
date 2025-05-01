@@ -20,6 +20,7 @@ public class LaserBeam : MonoBehaviour
     private float TimeforDistance;
     private float travelSpeed;
     [SerializeReference] private Rigidbody2D rb;
+    private RaycastHit2D hit;
     
     
     private void Start()
@@ -59,13 +60,13 @@ public class LaserBeam : MonoBehaviour
     }
 
     private void DetectPlayer(){
-        RaycastHit2D hit = Physics2D.CircleCast(laserOrigin, laserRadius, laserDirection, ParticleObject.transform.position.x, PlayerLayer);
-
-        if (hit.collider != null && hit.collider.CompareTag("Player"))
-        {
+        RaycastHit2D hit = Physics2D.CircleCast(laserOrigin, laserRadius, laserDirection, laserMaxLength, PlayerLayer);
+        if (hit.collider != null && hit.collider.CompareTag("Player")){
             PlayerMovement PlayerScript = hit.collider.gameObject.GetComponent<PlayerMovement>();
-            PlayerScript.Dying = true;
-            PlayerScript.Died = true;
+            if(PlayerScript.Dying == false) {
+                PlayerScript.Dying = true;
+                PlayerScript.Died = true;
+            }
         }
 
 

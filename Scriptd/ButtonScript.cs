@@ -17,12 +17,19 @@ public class ButtonScript : MonoBehaviour
     private float travelSpeedPlatform2;
     [SerializeReference] private GameObject Platform1;
     [SerializeReference] private GameObject Platform2;
-    private Rigidbody2D Rigidbody1;
-    private Rigidbody2D Rigidbody2;
+    private Rigidbody2D RigidbodyP1;
+    private Rigidbody2D RigidbodyP2;
+
+    [SerializeField] private Transform Layer1;
+    [SerializeField] private Transform Layer2;
+    [SerializeField] private Transform Layer3;
+    [SerializeField] private Transform Layer4;
+    [SerializeField] private Transform Layer5;
+    [SerializeField] private Transform Layer6;
 
     private void Start() {
-        Rigidbody1 = Platform1.GetComponent<Rigidbody2D>();
-        Rigidbody1 = Platform1.GetComponent<Rigidbody2D>();
+        RigidbodyP1 = Platform1.GetComponent<Rigidbody2D>();
+        RigidbodyP2 = Platform2.GetComponent<Rigidbody2D>();
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
@@ -43,15 +50,52 @@ public class ButtonScript : MonoBehaviour
     }
 
     private void Update() {
+        StopPlatforms();
+        TimeforDistance -= Time.deltaTime;
         ButtonResetTimer -= Time.deltaTime;
         if(ButtonResetTimer > -0.01 && ButtonResetTimer < 0.01) SpRend.sprite = Button_Raw;
     }
 
     private void CalculatingPlatformSpeed() {
+        
+        TimeforDistance = SetTimeforDistance;
+        float distance1 = Vector3.Distance(StartPPlatform1.position, EndPPlatform1.position);
+        travelSpeedPlatform1 = distance1 / SetTimeforDistance;
+
+        if(StartPPlatform1.position.y > EndPPlatform1.position.y) 
+            travelSpeedPlatform1 *= -1;
+
+        float distance2 = Vector3.Distance(StartPPlatform2.position, EndPPlatform2.position);
+        travelSpeedPlatform2 = distance2 / SetTimeforDistance;
+
+        if(StartPPlatform2.position.y > EndPPlatform2.position.y)
+            travelSpeedPlatform2 *= -1;
 
         MovingPlatforms();
     }
+    //(30-36)/2
     private void MovingPlatforms() {
-    
+        Debug.Log("Move");
+        RigidbodyP1.linearVelocityY = travelSpeedPlatform1;
+        RigidbodyP2.linearVelocityY = travelSpeedPlatform2;
+    }
+    private void StopPlatforms() {
+        SetPlatformYtoZero();
+
+        if(TimeforDistance > -0.1 && TimeforDistance <= 0) {
+            Debug.Log("Stop");
+
+            RigidbodyP1.linearVelocityY = 0;
+            RigidbodyP2.linearVelocityY = 0;
+        }
+    }
+    private void SetPlatformYtoZero() {
+        Layer1.localPosition = Vector3.zero;
+        Layer2.localPosition = Vector3.zero;
+        Layer3.localPosition = Vector3.zero;
+        Layer4.localPosition = Vector3.zero;
+        Layer5.localPosition = Vector3.zero;
+        Layer6.localPosition = Vector3.zero;
+
     }
 }

@@ -91,8 +91,9 @@ public class PlayerMovement : MonoBehaviour
         jumpAction = InputSystem.actions.FindAction("Jump");
     }
 
-    private void Update()
-    {
+    private void Update() {
+        
+        DieDuration -= Time.deltaTime;
         animator.SetFloat("NMS", timeSinceLastMove);
         animator.SetFloat("Y_Movement", rigidBody2D.linearVelocity.y);
 
@@ -207,7 +208,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
     
-       private void HandleWallJump() {
+    private void HandleWallJump() {
 
         WallJumpRecoverTime -= Time.deltaTime;
 
@@ -295,7 +296,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void HandleDeath(){
-        
+       
         if(Died){
             DieDuration = SetDieDuration;
             Died = false;
@@ -305,7 +306,6 @@ public class PlayerMovement : MonoBehaviour
         if(DieDuration <= 1.03 && DieDuration >= 0.97) transform.position = LastCheckpointPosition.position;
 
         if(DieDuration <= 0) Dying = false;
-        DieDuration -= Time.deltaTime;
         rigidBody2D.linearVelocity = new Vector2(0,0);
         if(!Dying) SetGravityScale(4);
     }
