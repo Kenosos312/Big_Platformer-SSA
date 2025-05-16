@@ -1,6 +1,5 @@
 using System.Runtime.CompilerServices;
 using Unity.Mathematics;
-using UnityEditor.ShaderGraph;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -224,6 +223,7 @@ public class PlayerMovement : MonoBehaviour
 
         if(Wallfound && !isDashing && !isGrounded) {
             WallSlidingSpeed = SetWallSlidingSpeed;
+            canDash = true;
             WallJumpRecoverTime = 0;
             directionFacing = directionFacing * -1;
             WallDirection = directionFacing;
@@ -362,5 +362,15 @@ public class PlayerMovement : MonoBehaviour
     {
         rigidBody2D.gravityScale = scale;
     }
+    public void SetJumpInput(float value) {
+        jumpInput = value;
+    }
+    public void SetDashInput(float value) {
+        dashInput = value;
+    }
+    public void SetHorizontalInput(float value) {
+        horizontalInput = value;
+    }
+
 }
 

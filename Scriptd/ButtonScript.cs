@@ -7,6 +7,7 @@ public class ButtonScript : MonoBehaviour
     [SerializeField] SpriteRenderer SpRend;
     float ButtonResetTimer;
 
+    [SerializeField] private int ButtonNumber;
     [SerializeField] private Transform StartPPlatform1;
     [SerializeField] private Transform StartPPlatform2;
     [SerializeField] private Transform EndPPlatform1;
@@ -17,6 +18,7 @@ public class ButtonScript : MonoBehaviour
     private float travelSpeedPlatform2;
     [SerializeReference] private GameObject Platform1;
     [SerializeReference] private GameObject Platform2;
+    [SerializeReference] private GameObject Laser;
     private Rigidbody2D RigidbodyP1;
     private Rigidbody2D RigidbodyP2;
 
@@ -57,7 +59,7 @@ public class ButtonScript : MonoBehaviour
     }
 
     private void CalculatingPlatformSpeed() {
-        
+        if(ButtonNumber == 6) ShutDownLaser();
         TimeforDistance = SetTimeforDistance;
         float distance1 = Vector3.Distance(StartPPlatform1.position, EndPPlatform1.position);
         travelSpeedPlatform1 = distance1 / SetTimeforDistance;
@@ -75,7 +77,6 @@ public class ButtonScript : MonoBehaviour
     }
     //(30-36)/2
     private void MovingPlatforms() {
-        Debug.Log("Move");
         RigidbodyP1.linearVelocityY = travelSpeedPlatform1;
         RigidbodyP2.linearVelocityY = travelSpeedPlatform2;
     }
@@ -83,7 +84,6 @@ public class ButtonScript : MonoBehaviour
         SetPlatformYtoZero();
 
         if(TimeforDistance > -0.1 && TimeforDistance <= 0) {
-            Debug.Log("Stop");
 
             RigidbodyP1.linearVelocityY = 0;
             RigidbodyP2.linearVelocityY = 0;
@@ -98,4 +98,12 @@ public class ButtonScript : MonoBehaviour
         Layer6.localPosition = Vector3.zero;
 
     }
+    private void ShutDownLaser() {
+        LaserBeam Laser_Script = Laser.GetComponent<LaserBeam>();
+        if(ButtonNumber == 6)
+            Laser_Script.laserMaxLength = 0;
+        else
+            Laser_Script.laserMaxLength = 50;
+    }
+
 }

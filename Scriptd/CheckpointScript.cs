@@ -1,5 +1,3 @@
-using Mono.Cecil.Cil;
-using UnityEditor.Build;
 using UnityEngine;
 
 public class CheckpointScript : MonoBehaviour

@@ -1,13 +1,13 @@
 fileFormatVersion: 2
-guid: 50018e0df9e9f9a4fb143ca4295ccf56
+guid: df0603af69d445140929c73ac02b42a1
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 8225880280629675469
-    second: Move TUtorial_0
+      213: -1965161974121356578
+    second: Jump TUtorial_0
   - first:
-      213: 1038507140138617773
-    second: Move TUtorial_1
+      213: -6043873009315652838
+    second: Jump TUtorial_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,19 +113,6 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
     buildTarget: WindowsStoreApps
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -142,7 +129,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Move TUtorial_0
+      name: Jump TUtorial_0
       rect:
         serializedVersion: 2
         x: 0
@@ -157,14 +144,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: dc582db5882382270800000000000000
-      internalID: 8225880280629675469
+      spriteID: ed2246ea8975ab4e0800000000000000
+      internalID: -1965161974121356578
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Move TUtorial_1
+      name: Jump TUtorial_1
       rect:
         serializedVersion: 2
         x: 0
@@ -179,8 +166,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: dab4ba0edb4896e00800000000000000
-      internalID: 1038507140138617773
+      spriteID: a1b5b241589df1ca0800000000000000
+      internalID: -6043873009315652838
       vertices: []
       indices: 
       edges: []
@@ -189,7 +176,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: cf194a80ea2d1b14f8f53f2907123d62
+    spriteID: 654d53a0f1d7074499adc5c4e3d47b4f
     internalID: 0
     vertices: []
     indices: 
@@ -199,8 +186,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Move TUtorial_0: 8225880280629675469
-      Move TUtorial_1: 1038507140138617773
+      Jump TUtorial_0: -1965161974121356578
+      Jump TUtorial_1: -6043873009315652838
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -4,7 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(LineRenderer))]
 public class LaserBeam : MonoBehaviour
 {
-    [SerializeField] private float laserMaxLength = 20f;
+    [SerializeField] public float laserMaxLength;
     [SerializeField] private float laserRadius = 0.3f; // "Dicke" des Lasers
     [SerializeField] private LayerMask collisionMask;
     [SerializeField] private LayerMask PlayerLayer;
